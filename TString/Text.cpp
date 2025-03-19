@@ -201,6 +201,32 @@ char TString::operator[](int p)
 }
 
 
+int TString::WordSearch(char* word)
+{
+  int l = strlen(word);
+  if (l > len)
+    throw "l > len";
+  for (int i = 0; i < len-l+1; ++i)
+  {
+    if (str[i] = word[0])
+    {
+      bool log = true;
+      for (int j = 1; j < l; ++j)
+      {
+        if (str[i + j] != word[j])
+        {
+          log = false;
+        }
+      }
+      if (log == true)
+        return i;
+    }
+  }
+  cout << "Not founded\n";
+  return -1;
+}
+
+
 ostream& operator<<(ostream& o, TString& line)
 {
   o << "Length of string: " << line.len << "\n" << "String: " << line.str << "\n";

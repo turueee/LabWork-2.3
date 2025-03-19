@@ -2,11 +2,8 @@
 
 int main()
 {
-  char b[256] = "regard";
-  char c[256] = "regard";
-  TString a(b),d,r;
-  r = a*8;
-  cin >> d;
-  cout << d;
-  cout << d[2];
+  char d[256] = "ooregardard";
+  char c[256] = "ard";
+  TString a(c),b("\0", 2), r;
+  cout << b.WordSearch(c);
 }
