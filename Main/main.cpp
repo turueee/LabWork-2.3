@@ -3,7 +3,7 @@
 int main()
 {
   char d[256] = "ooregardard";
-  char c[256] = "ard";
-  TString a(c),b(d), r;
-  cout << b.WordSearch(c);
+  char c = 'o';
+  TString b(d), r;
+  cout << b.LetterSearch(c);
 }

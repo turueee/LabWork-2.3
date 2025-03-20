@@ -32,6 +32,7 @@ public:
   char operator[](int p);
 
   int WordSearch(char* word);
+  int LetterSearch(char letter);
 
   friend ostream& operator<<(ostream& o, TString& line);
   friend istream& operator>>(istream& i, TString& line);

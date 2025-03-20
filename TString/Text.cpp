@@ -228,6 +228,17 @@ int TString::WordSearch(char* word)
 }
 
 
+int TString::LetterSearch(char letter)
+{
+  for (int i = 0; i < len; ++i)
+  {
+    if (str[i] == letter)
+      return i;
+  }
+  return -1;
+}
+
+
 ostream& operator<<(ostream& o, TString& line)
 {
   o << "Length of string: " << line.len << "\n" << "String: " << line.str << "\n";
