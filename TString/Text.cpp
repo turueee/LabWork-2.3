@@ -52,7 +52,7 @@ TString::TString(const char* str_)
 {
   if (str_ == nullptr)
     throw "str_ == nullptr";
-  len = strlen(str_);
+  len = cstrlen(str_);
   str = new char[len+1];
   for (int i = 0; i < len; ++i)
     str[i] = str_[i];
@@ -247,6 +247,17 @@ istream& operator>>(istream& i, TString& line)
 
 
 int strlen(char* str)
+{
+  int counter = 0;
+  if (str == nullptr)
+    throw "str == nullptr";
+  while (str[counter] != '\0')
+    counter++;
+  return counter;
+}
+
+
+int cstrlen(const char* str)
 {
   int counter = 0;
   if (str == nullptr)

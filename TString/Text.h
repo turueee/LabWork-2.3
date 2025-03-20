@@ -39,3 +39,4 @@ public:
 
 
 int strlen(char* str);
+int cstrlen(const char* str);
