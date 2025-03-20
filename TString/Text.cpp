@@ -12,18 +12,19 @@ TString::TString(const TString& p)
   len = p.len;
   if (p.str != nullptr)
   {
-    str = new char[len];
+    str = new char[len+1];
     for (int i = 0; i < len; ++i)
     {
       str[i] = p.str[i];
     }
+    str[len] = '\0';
   }
   else
     throw "p.str == nullptr";
 }
 
 
-TString::TString(TString&& p)
+TString::TString(TString&& p) noexcept
 {
   len = p.len;
   str = p.str;
@@ -242,4 +243,15 @@ istream& operator>>(istream& i, TString& line)
   i >> buf;
   line.SetStr(buf);
   return i;
+}
+
+
+int strlen(char* str)
+{
+  int counter = 0;
+  if (str == nullptr)
+    throw "str == nullptr";
+  while (str[counter] != '\0')
+    counter++;
+  return counter;
 }

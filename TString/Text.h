@@ -9,7 +9,7 @@ protected:
 public:
   TString();
   TString(const TString& p);
-  TString(TString&& p);
+  TString(TString&& p) noexcept;
   TString(char* str_, int len_);
   TString(const char* str_);
   ~TString();
@@ -36,3 +36,6 @@ public:
   friend ostream& operator<<(ostream& o, TString& line);
   friend istream& operator>>(istream& i, TString& line);
 };
+
+
+int strlen(char* str);
