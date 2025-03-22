@@ -120,18 +120,55 @@ TString TString::operator+(const TString& line)
 }
 
 
-TString TString::operator*(int rep)
+TString TString::operator*(int repeat)
 {
-  if (rep <= 0)
+  if (repeat <= 0)
     throw "rep <= 0";
-  char* buf = new char[len * rep + 1];
-  for (int i = 0; i < rep; ++i)
+  char* buf = new char[len * repeat + 1];
+  for (int i = 0; i < repeat; ++i)
   {
     for (int j = 0; j < len; ++j)
       buf[len * i + j] = str[j];
   }
-  buf[len * rep] = '\0';
+  buf[len * repeat] = '\0';
   return TString(buf);
+}
+
+
+char** TString::operator/(char letter)
+{
+  int* wordslen = this->LenWordsOfIncludes(letter);
+  char** split = new char* [this->CountOfIncludes(letter) + 1];
+  int i = 0, t = 0, start = 0;
+  for (i = 1; i < len; ++i)
+  {
+    if (str[i] == letter)
+    {
+      if (str[i - 1] != letter)
+      {
+        split[t] = new char[wordslen[t] + 1];
+        for (int j = 0; j < wordslen[t]; ++j)
+        {
+          split[t][j] = str[start + j];
+        }
+        split[t][wordslen[t]] = '\0';
+        start = i + 1;
+        t++;
+      }
+      else
+        start = i + 1;
+    }
+  }
+  if (str[len - 1] != letter)
+  {
+    split[t] = new char[wordslen[t] + 1];
+    for (int j = 0; j < len; j++)
+    {
+      split[t][j] = str[start + j];
+    }
+    split[t][wordslen[t]] = '\0';
+  }
+  return split;
 }
 
 
@@ -186,11 +223,11 @@ bool TString::operator>(const TString& line)
 }
 
 
-char TString::operator[](int p)
+char TString::operator[](int index)
 {
-  if (p >= len)
+  if (index >= len)
     throw "size";
-  return str[p];
+  return str[index];
 }
 
 
@@ -312,4 +349,15 @@ int cstrlen(const char* str)
   while (str[counter] != '\0')
     counter++;
   return counter;
+}
+
+
+void printsplit(char** split, TString& b,char letter)
+{
+  for (int i = 0; i < b.CountOfIncludes(letter); ++i)
+  {
+    for (int j = 0; j < b.LenWordsOfIncludes(letter)[i]; j++)
+      cout << split[i][j];
+    cout << endl;
+  }
 }

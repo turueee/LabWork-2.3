@@ -2,13 +2,12 @@
 
 int main()
 {
-  char d[256] = "oregardardr";
-  char c = 'r';
+  char d[256] = "This is tree";
+  char c = ' ';
+  char** sp;
   int* wordslen;
   TString b(d), r;
+  sp = b / c;
+  printsplit(sp, b, c);
   int* mass = b.LenWordsOfIncludes(c);
-  for (int i = 0; i < b.CountOfIncludes(c); ++i)
-  {
-    cout << mass[i] << endl;
-  }
 }

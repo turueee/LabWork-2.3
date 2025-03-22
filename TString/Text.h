@@ -21,7 +21,8 @@ public:
   void SetLen(int i);
 
   TString operator+(const TString& line);
-  TString operator*(int rep);
+  TString operator*(int repeat);
+  char** operator/(char letter);
   TString operator=(const TString& line);
 
   bool operator==(const TString& line);
@@ -29,12 +30,13 @@ public:
   bool operator<(const TString& line);
   bool operator>(const TString& line);
 
-  char operator[](int p);
+  char operator[](int index);
 
   int WordSearch(char* word);
   int LetterSearch(char letter);
   int CountOfIncludes(char letter);
   int* LenWordsOfIncludes(char letter);
+  
 
   friend ostream& operator<<(ostream& o, TString& line);
   friend istream& operator>>(istream& i, TString& line);
@@ -43,3 +45,4 @@ public:
 
 int strlen(char* str);
 int cstrlen(const char* str);
+void printsplit(char** split, TString& b,char letter);
