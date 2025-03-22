@@ -33,6 +33,8 @@ public:
 
   int WordSearch(char* word);
   int LetterSearch(char letter);
+  int CountOfIncludes(char letter);
+  int* LenWordsOfIncludes(char letter);
 
   friend ostream& operator<<(ostream& o, TString& line);
   friend istream& operator>>(istream& i, TString& line);

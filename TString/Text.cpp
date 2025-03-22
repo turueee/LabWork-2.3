@@ -85,20 +85,12 @@ int TString::GetLen()
 
 void TString::SetStr(char* str_)
 {
-  if (strlen(str_) == len)
-  {
-    for (int i = 0; i < len; ++i)
-      str[i] = str_[i];
-  }
-  else 
-  {
     delete[] str;
     len = strlen(str_);
     str = new char[len + 1];
     for (int i = 0; i < len; ++i)
       str[i] = str_[i];
     str[len] = '\0';
-  }
 }
 
 
@@ -239,6 +231,51 @@ int TString::LetterSearch(char letter)
 }
 
 
+int TString::CountOfIncludes(char letter)
+{
+  int count = 0;
+  for (int i = 1; i < len; ++i)
+  {
+    if (str[i] == letter)
+    {
+      if (str[i - 1] != letter)
+        ++count;
+    }
+  }
+  if (str[len - 1] != letter)
+    ++count;
+  return count;
+}
+
+
+int* TString::LenWordsOfIncludes(char letter)
+{
+  int *wordslen = new int [this->CountOfIncludes(letter)+1];
+  int i = 0, t = 0, start = 0;
+  for (i = 1; i < len; ++i)
+  {
+    if (str[i] == letter)
+    {
+      if (str[i - 1] != letter)
+      {
+        wordslen[t] = i - start;
+        start = i + 1;
+        ++t;
+      }
+      else
+      {
+        start = i + 1;
+      }
+    }
+  }
+  if (str[len - 1] != letter)
+  {
+    wordslen[t] = i - start;
+  }
+  return wordslen;
+}
+
+
 ostream& operator<<(ostream& o, TString& line)
 {
   o << "Length of string: " << line.len << "\n" << "String: " << line.str << "\n";
@@ -248,7 +285,6 @@ ostream& operator<<(ostream& o, TString& line)
 
 istream& operator>>(istream& i, TString& line)
 {
-  int l;
   char buf[256];
   cout << "Enter a string: ";
   i >> buf;
