@@ -286,6 +286,37 @@ int TString::AllWordSearch(char* word)
 }
 
 
+int* TString::AllIndexWordSearch(char* word)
+{
+  int* indexes = new int[this->AllWordSearch(word)];
+  int l = strlen(word);
+  int count = 0;
+  if (l > len)
+    throw "l > len";
+  for (int i = 0; i < len - l + 1; ++i)
+  {
+    if (str[i] == word[0])
+    {
+      bool log = true;
+      for (int j = 1; j < l; ++j)
+      {
+        if (str[i + j] != word[j])
+        {
+          log = false;
+        }
+      }
+      if (log == true)
+      {
+        indexes[count] = i;
+        count++;
+        i += l - 1;
+      }
+    }
+  }
+  return indexes;
+}
+
+
 int TString::LetterSearch(char letter)
 {
   for (int i = 0; i < len; ++i)

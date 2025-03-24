@@ -34,6 +34,7 @@ public:
 
   int WordSearch(char* word);
   int AllWordSearch(char* word);
+  int* AllIndexWordSearch(char* word);
   int LetterSearch(char letter);
   int CountOfIncludes(char letter);
   int* LenWordsOfIncludes(char letter);

@@ -12,5 +12,5 @@ int main()
   printsplit(sp, b, c);
   int* mass = b.LenWordsOfIncludes(c);
   */
-  cout << b.AllWordSearch(c) << endl;
+  cout << b.AllIndexWordSearch(c)[0] << endl;
 }
