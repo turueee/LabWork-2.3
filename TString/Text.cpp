@@ -238,7 +238,7 @@ int TString::WordSearch(char* word)
     throw "l > len";
   for (int i = 0; i < len-l+1; ++i)
   {
-    if (str[i] = word[0])
+    if (str[i] == word[0])
     {
       bool log = true;
       for (int j = 1; j < l; ++j)
@@ -254,6 +254,35 @@ int TString::WordSearch(char* word)
   }
   cout << "Not founded\n";
   return -1;
+}
+
+
+int TString::AllWordSearch(char* word)
+{
+  int l = strlen(word);
+  int count = 0;
+  if (l > len)
+    throw "l > len";
+  for (int i = 0; i < len - l+1; ++i)
+  {
+    if (str[i] == word[0])
+    {
+      bool log = true;
+      for (int j = 1; j < l; ++j)
+      {
+        if (str[i + j] != word[j])
+        {
+          log = false;
+        }
+      }
+      if (log == true)
+      {
+        count++;
+        i += l-1;
+      }
+    }
+  }
+  return count;
 }
 
 
@@ -310,6 +339,59 @@ int* TString::LenWordsOfIncludes(char letter)
     wordslen[t] = i - start;
   }
   return wordslen;
+}
+
+
+int TString::Insert(int position, char* word)
+{
+  int l = strlen(word);
+  char* newstr = new char[len + l + 1];
+  int i = 0;
+  while (i < position)
+  {
+    newstr[i] = str[i];
+    ++i;
+  }
+  while (position <= i && i < position + l)
+  {
+    newstr[i] = word[i - position];
+    ++i;
+  }
+  while (position + l<= i&&i<len+l)
+  {
+    newstr[i] = str[i - l];
+    ++i;
+  }
+  newstr[len + l] = '\0';
+  this->SetStr(newstr);
+  delete[] newstr;
+  return position;
+}
+
+
+int TString::Insert(int position,const TString& elem)
+{
+  char* newstr = new char[len + elem.len + 1];
+  int i = 0;
+  while (i < position)
+  {
+    newstr[i] = str[i];
+    ++i;
+  }
+  while (position <= i && i < position + elem.len)
+  {
+    newstr[i] = elem.str[i - position];
+    ++i;
+  }
+  while (position + elem.len <= i && i < len + elem.len)
+  {
+    newstr[i] = str[i - elem.len];
+    ++i;
+  }
+  newstr[len + elem.len] = '\0';
+  this->SetStr(newstr);
+  delete[] newstr;
+  return position;
 }
 
 

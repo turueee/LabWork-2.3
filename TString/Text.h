@@ -33,9 +33,12 @@ public:
   char operator[](int index);
 
   int WordSearch(char* word);
+  int AllWordSearch(char* word);
   int LetterSearch(char letter);
   int CountOfIncludes(char letter);
   int* LenWordsOfIncludes(char letter);
+  int Insert(int position, char* word);
+  int Insert(int position, const TString& elem);
   
 
   friend ostream& operator<<(ostream& o, TString& line);
