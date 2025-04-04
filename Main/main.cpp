@@ -1,4 +1,5 @@
-#include "Text.h"
+#include "TString.h"
+#include "TConsole.h"
 
 int main()
 {
