@@ -14,7 +14,7 @@ public:
   TString(const char* str_);
   ~TString();
 
-  char* GetStr();
+  void GetStr(char** line);
   int GetLen();
 
   void SetStr(char* str_);
@@ -22,7 +22,6 @@ public:
 
   TString operator+(const TString& line);
   TString operator*(int repeat);
-  char** operator/(char letter);
   TString operator=(const TString& line);
 
   bool operator==(const TString& line);
@@ -30,17 +29,21 @@ public:
   bool operator<(const TString& line);
   bool operator>(const TString& line);
 
-  char operator[](int index);
+  TString operator[](int index);
 
+  void Split(const TString& line, char*** split, int* outCount);
   int WordSearch(char* word);
   int AllWordSearch(char* word);
-  int* AllIndexWordSearch(char* word);
+  void AllIndexWordSearch(char* word, int** indexes);
   int LetterSearch(char letter);
   int CountOfIncludes(char letter);
-  int* LenWordsOfIncludes(char letter);
+  void LenWordsOfIncludes(char letter, int** wordslen);
+  void SetOfLetters(char** setletters);
+  void CountsOfLetters(int** setcounts);
+  char MostPopularLetter();
   int Insert(int position, char* word);
   int Insert(int position, const TString& elem);
-  
+
 
   friend ostream& operator<<(ostream& o, TString& line);
   friend istream& operator>>(istream& i, TString& line);
@@ -49,4 +52,3 @@ public:
 
 int strlen(char* str);
 int cstrlen(const char* str);
-void printsplit(char** split, TString& b,char letter);

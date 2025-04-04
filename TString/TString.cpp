@@ -1,4 +1,4 @@
-#include "Text.h"
+#include "Tstring.h"
 
 TString::TString()
 {
@@ -12,7 +12,7 @@ TString::TString(const TString& p)
   len = p.len;
   if (p.str != nullptr)
   {
-    str = new char[len+1];
+    str = new char[len + 1];
     for (int i = 0; i < len; ++i)
     {
       str[i] = p.str[i];
@@ -41,7 +41,7 @@ TString::TString(char* str_, int len_)
   if (strlen(str_) != len)
     throw "strlen(str_) != len_";
   len = len_;
-  str = new char[len+1];
+  str = new char[len + 1];
   for (int i = 0; i < len; ++i)
     str[i] = str_[i];
   str[len] = '\0';
@@ -53,7 +53,7 @@ TString::TString(const char* str_)
   if (str_ == nullptr)
     throw "str_ == nullptr";
   len = cstrlen(str_);
-  str = new char[len+1];
+  str = new char[len + 1];
   for (int i = 0; i < len; ++i)
     str[i] = str_[i];
   str[len] = '\0';
@@ -68,12 +68,17 @@ TString::~TString()
 }
 
 
-char* TString::GetStr()
+void TString::GetStr(char** line)
 {
   if (str != nullptr)
-    return str;
+  {
+    (*line) = new char[len + 1];
+    for (int i = 0; i < len; ++i)
+      (*line)[i] = str[i];
+    (*line)[len] = '\0';
+  }
   else
-    return nullptr;
+    line = nullptr;
 }
 
 
@@ -85,12 +90,12 @@ int TString::GetLen()
 
 void TString::SetStr(char* str_)
 {
-    delete[] str;
-    len = strlen(str_);
-    str = new char[len + 1];
-    for (int i = 0; i < len; ++i)
-      str[i] = str_[i];
-    str[len] = '\0';
+  delete[] str;
+  len = strlen(str_);
+  str = new char[len + 1];
+  for (int i = 0; i < len; ++i)
+    str[i] = str_[i];
+  str[len] = '\0';
 }
 
 
@@ -101,22 +106,26 @@ void TString::SetLen(int len_)
   if (len == len_)
     return;
   len = len_;
-  char* str_ = this->GetStr();
+  char* str_;
+  this->GetStr(&str_);
   str = new char[len + 1];
   for (int i = 0; i < len; ++i)
     str[i] = str_[i];
+  delete[] str_;
 }
 
 
 TString TString::operator+(const TString& line)
 {
-  char* nstr = new char[len + line.len +1];
+  char* nstr = new char[len + line.len + 1];
   for (int i = 0; i < len; ++i)
     nstr[i] = str[i];
   for (int i = 0; i < line.len; ++i)
     nstr[i + len] = line.str[i];
   nstr[len + line.len] = '\0';
-  return TString(nstr);
+  TString elem(nstr);
+  delete[] nstr;
+  return elem;
 }
 
 
@@ -131,45 +140,60 @@ TString TString::operator*(int repeat)
       buf[len * i + j] = str[j];
   }
   buf[len * repeat] = '\0';
-  return TString(buf);
+  TString elem(buf);
+  delete[] buf;
+  return elem;
 }
 
 
-char** TString::operator/(char letter)
+void TString::Split(const TString& line, char*** split, int* outCount)
 {
-  int* wordslen = this->LenWordsOfIncludes(letter);
-  char** split = new char* [this->CountOfIncludes(letter) + 1];
-  int i = 0, t = 0, start = 0;
-  for (i = 1; i < len; ++i)
-  {
-    if (str[i] == letter)
-    {
-      if (str[i - 1] != letter)
-      {
-        split[t] = new char[wordslen[t] + 1];
-        for (int j = 0; j < wordslen[t]; ++j)
-        {
-          split[t][j] = str[start + j];
-        }
-        split[t][wordslen[t]] = '\0';
-        start = i + 1;
-        t++;
+  // Получаем позиции разделителей
+  int* indexes = nullptr;
+  int wordCount = this->AllWordSearch(line.str);
+  this->AllIndexWordSearch(line.str, &indexes);
+
+  // Первый проход: подсчет непустых подстрок
+  int realCount = 0;
+  int prevPos = 0;
+
+  for (int i = 0; i <= wordCount; i++) {
+    int currentPos = (i < wordCount) ? indexes[i] : len;
+    if (currentPos > prevPos) {
+      realCount++;
+    }
+    prevPos = currentPos + line.len;
+  }
+
+  *outCount = realCount;
+  *split = realCount ? new char* [realCount] : nullptr;
+
+  // Второй проход: заполнение подстрок
+  int strIndex = 0;
+  prevPos = 0;
+
+  for (int i = 0; i <= wordCount; i++) {
+    int currentPos = (i < wordCount) ? indexes[i] : len;
+
+    if (currentPos > prevPos) {
+      int substrLen = currentPos - prevPos;
+      (*split)[strIndex] = new char[substrLen + 1];
+
+      // Ручное копирование символов
+      for (int j = 0; j < substrLen; j++) {
+        (*split)[strIndex][j] = str[prevPos + j];
       }
-      else
-        start = i + 1;
+      (*split)[strIndex][substrLen] = '\0';
+
+      strIndex++;
     }
+
+    prevPos = currentPos + line.len;
   }
-  if (str[len - 1] != letter)
-  {
-    split[t] = new char[wordslen[t] + 1];
-    for (int j = 0; j < len; j++)
-    {
-      split[t][j] = str[start + j];
-    }
-    split[t][wordslen[t]] = '\0';
-  }
-  return split;
+
+  delete[] indexes;
 }
+
 
 
 TString TString::operator=(const TString& line)
@@ -223,11 +247,15 @@ bool TString::operator>(const TString& line)
 }
 
 
-char TString::operator[](int index)
+TString TString::operator[](int index)
 {
   if (index >= len)
     throw "size";
-  return str[index];
+  TString a;
+  char res[2];
+  res[0] = str[index];
+  res[1] = '\0';
+  return TString(res);
 }
 
 
@@ -236,7 +264,7 @@ int TString::WordSearch(char* word)
   int l = strlen(word);
   if (l > len)
     throw "l > len";
-  for (int i = 0; i < len-l+1; ++i)
+  for (int i = 0; i < len - l + 1; ++i)
   {
     if (str[i] == word[0])
     {
@@ -263,36 +291,6 @@ int TString::AllWordSearch(char* word)
   int count = 0;
   if (l > len)
     throw "l > len";
-  for (int i = 0; i < len - l+1; ++i)
-  {
-    if (str[i] == word[0])
-    {
-      bool log = true;
-      for (int j = 1; j < l; ++j)
-      {
-        if (str[i + j] != word[j])
-        {
-          log = false;
-        }
-      }
-      if (log == true)
-      {
-        count++;
-        i += l-1;
-      }
-    }
-  }
-  return count;
-}
-
-
-int* TString::AllIndexWordSearch(char* word)
-{
-  int* indexes = new int[this->AllWordSearch(word)];
-  int l = strlen(word);
-  int count = 0;
-  if (l > len)
-    throw "l > len";
   for (int i = 0; i < len - l + 1; ++i)
   {
     if (str[i] == word[0])
@@ -307,13 +305,39 @@ int* TString::AllIndexWordSearch(char* word)
       }
       if (log == true)
       {
-        indexes[count] = i;
         count++;
         i += l - 1;
       }
     }
   }
-  return indexes;
+  return count;
+}
+
+
+void TString::AllIndexWordSearch(char* word, int** indexes)
+{
+  *indexes = new int[this->AllWordSearch(word) + 1];
+  int l = strlen(word);
+  int count = 0;
+
+  if (l > len)
+    throw "l > len";
+
+  for (int i = 0; i < len - l + 1; ++i) {
+    if (str[i] == word[0]) {
+      bool log = true;
+      for (int j = 1; j < l; ++j) {
+        if (str[i + j] != word[j]) {
+          log = false;
+          break;
+        }
+      }
+      if (log) {
+        (*indexes)[count++] = i;
+        i += l - 1;
+      }
+    }
+  }
 }
 
 
@@ -327,27 +351,43 @@ int TString::LetterSearch(char letter)
   return -1;
 }
 
-
 int TString::CountOfIncludes(char letter)
 {
   int count = 0;
-  for (int i = 1; i < len; ++i)
+  for (int i = 0; i < len; ++i)
   {
     if (str[i] == letter)
-    {
-      if (str[i - 1] != letter)
-        ++count;
-    }
+      ++count;
   }
-  if (str[len - 1] != letter)
-    ++count;
   return count;
 }
 
 
-int* TString::LenWordsOfIncludes(char letter)
+char TString::MostPopularLetter()
 {
-  int *wordslen = new int [this->CountOfIncludes(letter)+1];
+  char* set;
+  int* setcount;
+  this->SetOfLetters(&set);
+  this->CountsOfLetters(&setcount);
+  char mp;
+  int max = 0;
+  for (int i = 0; i < strlen(set); ++i)
+  {
+    if (max < setcount[i])
+    {
+      max = setcount[i];
+      mp = set[i];
+    }
+  }
+  delete[] set;
+  delete[] setcount;
+  return mp;
+}
+
+
+void TString::LenWordsOfIncludes(char letter, int** wordslen)
+{
+  *wordslen = new int[this->CountOfIncludes(letter) + 1];
   int i = 0, t = 0, start = 0;
   for (i = 1; i < len; ++i)
   {
@@ -355,7 +395,7 @@ int* TString::LenWordsOfIncludes(char letter)
     {
       if (str[i - 1] != letter)
       {
-        wordslen[t] = i - start;
+        *wordslen[t] = i - start;
         start = i + 1;
         ++t;
       }
@@ -367,9 +407,45 @@ int* TString::LenWordsOfIncludes(char letter)
   }
   if (str[len - 1] != letter)
   {
-    wordslen[t] = i - start;
+    *wordslen[t] = i - start;
   }
-  return wordslen;
+}
+
+
+void TString::SetOfLetters(char** setletters)
+{
+  (*setletters) = new char[len + 1];
+  int flag = 0;
+  (*setletters)[0] = str[0];
+  flag++;
+  for (int i = 1; i < len; ++i)
+  {
+    bool log = true;
+    for (int j = 0; j < flag; ++j)
+    {
+      if ((*setletters)[j] == str[i])
+        log = false;
+    }
+    if (log == true)
+    {
+      (*setletters)[flag] = str[i];
+      flag++;
+    }
+  }
+  (*setletters)[flag] = '\0';
+}
+
+
+void TString::CountsOfLetters(int** setcounts)
+{
+  char* setletters;
+  this->SetOfLetters(&setletters);
+  (*setcounts) = new int[strlen(setletters)];
+  for (int i = 0; i < strlen(setletters); ++i)
+  {
+    (*setcounts)[i] = this->CountOfIncludes(setletters[i]);
+  }
+  delete[] setletters;
 }
 
 
@@ -388,7 +464,7 @@ int TString::Insert(int position, char* word)
     newstr[i] = word[i - position];
     ++i;
   }
-  while (position + l<= i&&i<len+l)
+  while (position + l <= i && i < len + l)
   {
     newstr[i] = str[i - l];
     ++i;
@@ -400,7 +476,7 @@ int TString::Insert(int position, char* word)
 }
 
 
-int TString::Insert(int position,const TString& elem)
+int TString::Insert(int position, const TString& elem)
 {
   char* newstr = new char[len + elem.len + 1];
   int i = 0;
@@ -462,15 +538,4 @@ int cstrlen(const char* str)
   while (str[counter] != '\0')
     counter++;
   return counter;
-}
-
-
-void printsplit(char** split, TString& b,char letter)
-{
-  for (int i = 0; i < b.CountOfIncludes(letter); ++i)
-  {
-    for (int j = 0; j < b.LenWordsOfIncludes(letter)[i]; j++)
-      cout << split[i][j];
-    cout << endl;
-  }
 }
