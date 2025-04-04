@@ -1,4 +1,4 @@
-#include "Tstring.h"
+#include "TString.h"
 
 TString::TString()
 {
