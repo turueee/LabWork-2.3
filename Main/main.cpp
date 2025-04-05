@@ -3,14 +3,17 @@
 
 int main()
 {
+  TConsole app;
   int count;
-  char d[256] = "nsabamsabamk";
+  char d[256] = "w";
   char c[256] = "aba";
   char** sp;
   char* set;
   int* wordslen;
-  TString b, r;
+  TString b(d),t(c),re;
 
+  cout << (b+t) << endl;
+  /*
   b.SetStr(d);
   r.SetStr(c);
 
@@ -25,4 +28,10 @@ int main()
     cout << sp[i] << endl;
 
   cout << b.MostPopularLetter()<<endl;
+  system("cls");
+  cin >> app;
+  system("cls");
+  ap=app.Init();
+  cout << ap << endl;
+  */
 }

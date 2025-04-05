@@ -21,3 +21,5 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/TConsole) #Добавляем д
 add_subdirectory(TString) #Добавляем директорию с под-CMakeList-ом, и выполняем под-CMakeList
 add_subdirectory(Main)
 add_subdirectory(TConsole)
+add_subdirectory(test)
+add_subdirectory(gtest)

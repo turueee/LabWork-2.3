@@ -36,10 +36,10 @@ TString::TString(TString&& p) noexcept
 
 TString::TString(char* str_, int len_)
 {
-  if (len <= 0)
-    throw "len <= 0";
-  if (strlen(str_) != len)
-    throw "strlen(str_) != len_";
+  if (len_ <= 0)
+    throw "len_ <= 0";
+  if (strlen(str_) < len)
+    throw "strlen(str_) < len_";
   len = len_;
   str = new char[len + 1];
   for (int i = 0; i < len; ++i)
@@ -90,6 +90,8 @@ int TString::GetLen()
 
 void TString::SetStr(char* str_)
 {
+  if (str_ == nullptr)
+    throw "str_==nullptr";
   delete[] str;
   len = strlen(str_);
   str = new char[len + 1];
@@ -123,9 +125,7 @@ TString TString::operator+(const TString& line)
   for (int i = 0; i < line.len; ++i)
     nstr[i + len] = line.str[i];
   nstr[len + line.len] = '\0';
-  TString elem(nstr);
-  delete[] nstr;
-  return elem;
+  return TString(nstr);
 }
 
 
@@ -140,9 +140,7 @@ TString TString::operator*(int repeat)
       buf[len * i + j] = str[j];
   }
   buf[len * repeat] = '\0';
-  TString elem(buf);
-  delete[] buf;
-  return elem;
+  return TString(buf);
 }
 
 

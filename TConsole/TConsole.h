@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "TString.h"
 using namespace std;
 
 class TConsole
@@ -22,7 +23,7 @@ public:
   int GetY();
   int GetLen();
 
-  void Init();
+  TString Init();
   friend ostream& operator<<(ostream& o, TConsole& line);
   friend istream& operator>>(istream& i, TConsole& line);
 };

@@ -1,4 +1,6 @@
+#include <conio.h>
 #include "TConsole.h"
+#include "TString.h"
 
 TConsole::TConsole()
 {
@@ -66,8 +68,34 @@ int TConsole::GetLen()
   return len;
 }
 
-void TConsole::Init()
+TString TConsole::Init()
 {
+  for (int i = 0; i < y; ++i)
+    cout << "\n";
+  for (int i = 0; i < x; ++i)
+    cout << " ";
+
+  char * str = new char[256];
+  int i = 0;
+  while (str[i - 1] != '\r')
+  {
+    if (i > len)
+    {
+      system("cls");
+      for (int i = 0; i < y; ++i)
+        cout << "\n";
+      for (int i = 0; i < x; ++i)
+        cout << " ";
+      i = 0;
+    }
+    str[i] = _getch();
+    cout << str[i];
+    ++i;
+  }
+  str[i - 1] = '\0';
+  len = strlen(str);
+  system("cls");
+  return TString(str);
 }
 
 
